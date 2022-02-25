@@ -33,3 +33,8 @@ android {
         minSdkVersion 16
     }
 }
+
+dependencies {
+    implementation fileTree(dir: "libs",includes: ["*.jar"])
+    implementation files('libs/Sewoo_Android_1109.jar')
+}

@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:flutter/services.dart';
 import 'package:dj_printer/dj_printer.dart';
+import 'package:dj_printer/src/device_model.dart';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  List<Device> devices = [];
 
   @override
   void initState() {
@@ -26,23 +28,30 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await DjPrinter.platformVersion ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+    var per = await Permission.bluetooth.isGranted;
+    if (!per) {
+      Permission.bluetooth.request();
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+    var pers = await Permission.locationWhenInUse.isGranted;
+    if (!pers) {
+      Permission.locationWhenInUse.request();
+    }
+    DjPrinter.init();
+    DjPrinter.addDiscoveryListen(onReceive: (data) {
+      var js = json.decode(data.toString());
+      devices.add(Device(
+          name: js['name'], address: js['address'], isPaired: js['isPaired']));
+      setState(() {});
+    }, onStart: () {
+      print("————————————————————————");
+    }, onFinish: () {
+      print('——————————————————————————————');
+      DjPrinter.cancelDiscovery();
+    });
+    DjPrinter.addConnectListen(onConnect: () {
+      print("connected");
+    }, onDisconnect: () {
+      print('disconnected');
     });
   }
 
@@ -54,7 +63,41 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              TextButton(
+                  onPressed: () {
+                    devices.clear();
+                    DjPrinter.startSearch;
+                  },
+                  child: const Text('扫描设备')),
+              // TextButton(onPressed: () {}, child: const Text('打印')),
+              const SizedBox(
+                height: 20,
+              ),
+              ...devices
+                  .map((e) => TextButton(
+                      onPressed: () {
+                        DjPrinter.connect(e.address);
+                      },
+                      child: Text(e.name)))
+                  .toList(),
+              const SizedBox(
+                height: 20,
+              ),
+              TextButton(
+                  onPressed: () {
+                    DjPrinter.print(
+                        code: 'ASSZ2022012500010002',
+                        channel: 'cosco定提-月达-卡派',
+                        country: '美国',
+                        countStr: '10/20',
+                        offset: 0,
+                        hasPlan: false);
+                  },
+                  child: const Text('打印'))
+            ],
+          ),
         ),
       ),
     );
