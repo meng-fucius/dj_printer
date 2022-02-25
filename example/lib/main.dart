@@ -36,8 +36,8 @@ class _MyAppState extends State<MyApp> {
     if (!pers) {
       Permission.locationWhenInUse.request();
     }
-    DjPrinter.init();
-    DjPrinter.addDiscoveryListen(onReceive: (data) {
+    DjPrinter().init();
+    DjPrinter().addDiscoveryListen(onReceive: (data) {
       var js = json.decode(data.toString());
       devices.add(Device(
           name: js['name'], address: js['address'], isPaired: js['isPaired']));
@@ -46,9 +46,9 @@ class _MyAppState extends State<MyApp> {
       print("————————————————————————");
     }, onFinish: () {
       print('——————————————————————————————');
-      DjPrinter.cancelDiscovery();
+      DjPrinter().cancelDiscovery();
     });
-    DjPrinter.addConnectListen(onConnect: () {
+    DjPrinter().addConnectListen(onConnect: () {
       print("connected");
     }, onDisconnect: () {
       print('disconnected');
@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
               TextButton(
                   onPressed: () {
                     devices.clear();
-                    DjPrinter.startSearch;
+                    DjPrinter().startSearch;
                   },
                   child: const Text('扫描设备')),
               // TextButton(onPressed: () {}, child: const Text('打印')),
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
               ...devices
                   .map((e) => TextButton(
                       onPressed: () {
-                        DjPrinter.connect(e.address);
+                        DjPrinter().connect(e.address);
                       },
                       child: Text(e.name)))
                   .toList(),
@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
               ),
               TextButton(
                   onPressed: () {
-                    DjPrinter.print(
+                    DjPrinter().print(
                         code: 'ASSZ2022012500010002',
                         channel: 'cosco定提-月达-卡派',
                         country: '美国',
