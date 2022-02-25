@@ -4,6 +4,11 @@ import 'package:dj_printer/src/status_enum.dart';
 import 'package:flutter/services.dart';
 
 class DjPrinter {
+  static late final DjPrinter _instance = DjPrinter._();
+
+  DjPrinter._();
+
+  factory DjPrinter() => _instance;
   static const MethodChannel _channel = MethodChannel('dj_printer');
   static const EventChannel _deviceChannel =
       EventChannel("com.discovery.devices");
