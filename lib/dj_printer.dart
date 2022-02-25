@@ -14,10 +14,10 @@ class DjPrinter {
       EventChannel("com.discovery.devices");
   StreamSubscription? _discoveryStream;
 
-  Future<StreamSubscription> addDiscoveryListen(
+  StreamSubscription addDiscoveryListen(
       {required void Function(dynamic data) onReceive,
       void Function()? onStart,
-      void Function()? onFinish}) async {
+      void Function()? onFinish}) {
     if (_discoveryStream == null) {
       return _deviceChannel.receiveBroadcastStream().listen((data) {
         if (data == "start" && onStart != null) {
@@ -43,9 +43,9 @@ class DjPrinter {
   static const EventChannel _connectChannel = EventChannel("com.connect");
   StreamSubscription? _connectStream;
 
-  Future<StreamSubscription> addConnectListen(
+  StreamSubscription addConnectListen(
       {required void Function() onConnect,
-      required void Function() onDisconnect}) async {
+      required void Function() onDisconnect}) {
     if (_connectStream == null) {
       return _connectChannel.receiveBroadcastStream().listen((data) {
         if (data == 'connected') {
