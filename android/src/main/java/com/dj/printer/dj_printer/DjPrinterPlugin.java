@@ -99,8 +99,12 @@ public class DjPrinterPlugin implements FlutterPlugin, MethodCallHandler {
         } else if (call.method.equals("getStatus")) {
             int sta = asPrint.Get_Status();
             result.success(sta);
-        } else {
-            result.notImplemented();
+        } else if (call.method.equals("disposeDiscovery")) {
+            blutooth.cancelDiscoveryResult(context);
+            result.success(true);
+        } else if (call.method.equals("disposeConnect")) {
+            blutooth.ExcuteDisconnect(context);
+            result.success(true);
         }
     }
 

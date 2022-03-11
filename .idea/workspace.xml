@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2f8e3712-04e2-429a-bcea-c8db1a54008e" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/dj/printer/dj_printer/DjPrinterPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/dj/printer/dj_printer/DjPrinterPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/dj_printer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/dj_printer.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

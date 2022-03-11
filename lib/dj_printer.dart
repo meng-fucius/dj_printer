@@ -11,13 +11,13 @@ class DjPrinter {
   factory DjPrinter() => _instance;
   static const MethodChannel _channel = MethodChannel('dj_printer');
   static const EventChannel _deviceChannel =
-      EventChannel("com.discovery.devices");
+  EventChannel("com.discovery.devices");
   StreamSubscription? _discoveryStream;
 
   StreamSubscription addDiscoveryListen(
       {required void Function(dynamic data) onReceive,
-      void Function()? onStart,
-      void Function()? onFinish}) {
+        void Function()? onStart,
+        void Function()? onFinish}) {
     if (_discoveryStream == null) {
       return _deviceChannel.receiveBroadcastStream().listen((data) {
         if (data == "start" && onStart != null) {
@@ -34,18 +34,17 @@ class DjPrinter {
   }
 
   void cancelDiscovery() {
-    if (_discoveryStream != null) {
-      _discoveryStream!.cancel();
-      _discoveryStream = null;
-    }
+    _discoveryStream?.cancel();
+    _discoveryStream = null;
+    print('结束搜索');
+    disposeDiscovery();
   }
 
   static const EventChannel _connectChannel = EventChannel("com.connect");
   StreamSubscription? _connectStream;
 
-  StreamSubscription addConnectListen(
-      {required void Function() onConnect,
-      required void Function() onDisconnect}) {
+  StreamSubscription addConnectListen({required void Function() onConnect,
+    required void Function() onDisconnect}) {
     if (_connectStream == null) {
       return _connectChannel.receiveBroadcastStream().listen((data) {
         if (data == 'connected') {
@@ -66,13 +65,22 @@ class DjPrinter {
     }
   }
 
-  Future<bool?> get startSearch async {
-    final res = await _channel.invokeMethod('startSearch');
-    return res;
+  void get startSearch {
+    final res = _channel.invokeMethod('startSearch');
   }
 
   Future<bool?> connect(String address) async {
     final res = await _channel.invokeMethod('connect', {'address': address});
+    return res;
+  }
+
+  void disposeDiscovery() {
+    print('disposeDiscovery');
+    final res = _channel.invokeMethod('disposeDiscovery');
+  }
+
+  Future<bool?> disposeConnect() async {
+    final res = await _channel.invokeMethod('disposeConnect');
     return res;
   }
 
@@ -104,13 +112,12 @@ class DjPrinter {
     }
   }
 
-  Future<bool?> print(
-      {required String code,
-      required String channel,
-      required String country,
-      required String countStr,
-      required int offset,
-      required bool hasPlan}) async {
+  Future<bool?> printAScode({required String code,
+    required String channel,
+    required String country,
+    required String countStr,
+    required int offset,
+    required bool hasPlan}) async {
     final res = await _channel.invokeMethod('print', {
       'code': code,
       'channel': channel,

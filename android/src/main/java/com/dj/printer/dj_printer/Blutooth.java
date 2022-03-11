@@ -41,7 +41,7 @@ public class Blutooth {
         bluetoothPort.SetMacFilter(false);
         bluetoothSetup();
         searchflags = false;
-        disconnectflags=false;
+        disconnectflags = false;
         System.out.println("初始化完成");
     }
 
@@ -57,12 +57,15 @@ public class Blutooth {
                 } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                     try {
                         if (bluetoothPort.isConnected()) {
+                            System.out.println("1111s");
                             bluetoothPort.disconnect();
-                            if ((btThread != null) && (btThread.isAlive())) {
-                                cancelThread();
-                            }
-                            eventSink.success("disconnected");
                         }
+                        if ((btThread != null) && (btThread.isAlive())) {
+                            cancelThread();
+                        }
+                        System.out.println("disconnected");
+                        eventSink.success("disconnected");
+
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -160,7 +163,7 @@ public class Blutooth {
         try {
             bluetoothPort.disconnect();
 
-            if((btThread != null) && (btThread.isAlive()))
+            if ((btThread != null) && (btThread.isAlive()))
                 btThread.interrupt();
 
             disconnectflags = true;
@@ -177,8 +180,11 @@ public class Blutooth {
 
     //取消搜索
     public void cancelDiscoveryResult(Context context) {
+        System.out.println("取消搜索");
         mBluetoothAdapter.cancelDiscovery();
         context.unregisterReceiver(discoveryResult);
+        context.unregisterReceiver(searchStart);
+        context.unregisterReceiver(searchFinish);
     }
 
 
@@ -263,12 +269,11 @@ public class Blutooth {
         }
     }
 
-    public void ExcuteDisconnect(Context context)
-    {
+    public void ExcuteDisconnect(Context context) {
         new ExcuteDisconnectBT().execute(context);
     }
 
-    private class ExcuteDisconnectBT extends AsyncTask<Context, Void, Void>{
+    private class ExcuteDisconnectBT extends AsyncTask<Context, Void, Void> {
 
 
         @Override
@@ -276,9 +281,8 @@ public class Blutooth {
             try {
                 DisconnectDevice(contexts[0]);
 
-                while(true)
-                {
-                    if(disconnectflags)
+                while (true) {
+                    if (disconnectflags)
                         break;
 
                     Thread.sleep(100);
@@ -291,16 +295,20 @@ public class Blutooth {
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             super.onPreExecute();
-        };
+        }
+
+        ;
 
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onPostExecute(Void result) {
             disconnectflags = false;
             super.onPostExecute(result);
-        };
+        }
+
+        ;
     }
 
 }
