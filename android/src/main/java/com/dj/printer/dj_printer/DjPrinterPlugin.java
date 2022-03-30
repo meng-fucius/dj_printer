@@ -77,6 +77,7 @@ public class DjPrinterPlugin implements FlutterPlugin, MethodCallHandler {
                 e.printStackTrace();
             }
         } else if (call.method.equals("init")) {
+            System.out.println("打印机初始化");
             blutooth.init();
             asPrint = new AsPrint();
 

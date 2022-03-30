@@ -42,7 +42,7 @@ public class Blutooth {
         bluetoothSetup();
         searchflags = false;
         disconnectflags = false;
-        System.out.println("初始化完成");
+        System.out.println("打印机蓝牙初始化完成");
     }
 
     //初始化连接监听

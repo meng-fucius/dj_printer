@@ -69,6 +69,10 @@ class DjPrinter {
     final res = _channel.invokeMethod('startSearch');
   }
 
+  bool _hasInit = false;
+
+  bool get hasInit => _hasInit;
+
   Future<bool?> connect(String address) async {
     final res = await _channel.invokeMethod('connect', {'address': address});
     return res;
@@ -86,6 +90,7 @@ class DjPrinter {
 
   Future<bool?> init() async {
     final res = await _channel.invokeMethod('init');
+    _hasInit = true;
     return res;
   }
 
